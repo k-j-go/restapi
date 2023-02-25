@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  portainer:
+    image: portainer/portainer
+    networks:
+      - dc1ring
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer-data:/data
+    # Enable you to access potainers web interface from your host machine
+    # using http://localhost:10001
+    ports:
+      - "10001:9000"
+
+  postgres:
+    image: postgres:12.3-alpine
+    networks:
+      - dc1ring
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  rust:
+    image: debian:buster-slim
+    command: bash
+    depends_on:
+      - portainer
+      - postgres
+    volumes:
+      - .:/build
+    working_dir: /build
+    ports:
+      - 8080:8080
+    networks:
+      - dc1ring
+    environment:
+      HOST: app_server
+      PORT: 3333
+
+networks:
+  dc1ring:
+
+
+

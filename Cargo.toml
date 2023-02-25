@@ -1,6 +1,6 @@
 [workspace]
 
 members = [
-    "web/pilot",
+    "cmd/app",
     "funcs/generic",
 ]
